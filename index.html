@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro Client-Server App</title>
+</head>
+<body>
+    <button id="getDataBtn">Get Data</button>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('getDataBtn').addEventListener('click', () => {
+            socket.emit('getData');
+        });
+
+        socket.on('data', (data) => {
+        if (data.error) {
+            showErrorAlert(data.error);
+        } else {
+            showSuccessAlert(data);
+        }
+        });
+
+        socket.on('error', (error) => {
+            console.error('Socket error:', error);
+            showErrorAlert('Error communicating with the server');
+        });
+
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        function showSuccessAlert(data) {
+            Swal.fire({
+                title: 'Data from Server',
+                text: JSON.stringify(data),
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+
+    </script>
+</body>
+</html>
